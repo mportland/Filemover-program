@@ -43,13 +43,18 @@ def begin_Scan(self):
     make_time_stamp(self)
         
 def remind_user(self):                                                          #Displays lastchk for user
-    check_timestamp(self)
-    answer = tk.messagebox.askquestion("Last Scan", 'Last scan was done {}. Do you wish to continue?'
+    try:
+        check_timestamp(self)
+        answer = tk.messagebox.askquestion("Last Scan", 'Last scan was done {}. Do you wish to continue?'
                                        .format(time.ctime(float(self.lastchk[0]))))
-    if answer == 'yes':
+        if answer == 'yes':
+            pass
+        else:
+            ask_quit(self)
+    except TypeError:
         pass
-    else:
-        ask_quit(self)
+    
+    
     
 def check_timestamp(self):                                                      #Grabs last entry of the tbl_timestamp
     conn = sqlite3.connect('lastscan.db')
@@ -57,9 +62,9 @@ def check_timestamp(self):                                                      
         cur = conn.cursor()
         cur.execute("SELECT col_lastscan FROM tbl_timestamp ORDER BY ID DESC LIMIT 1")
         self.lastchk = cur.fetchone()
-        print(self.lastchk)
     conn.commit()
     conn.close()
+    
 
 def create_db(self):                                                            #Creates database, table and table contents
     conn = sqlite3.connect('lastscan.db')
